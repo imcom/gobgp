@@ -45,7 +45,6 @@ require (
 
 replace (
 	github.com/osrg/gobgp/api/v3 => ./api
-	github.com/osrg/gobgp/v3 => ./
 )
 
 go 1.13

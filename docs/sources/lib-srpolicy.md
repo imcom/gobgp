@@ -23,7 +23,7 @@ import (
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
-	api "github.com/osrg/gobgp/api"
+	api "github.com/osrg/gobgp/api/v3"
 	toolbox "github.com/sbezverk/gobgptoolbox"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/anypb"

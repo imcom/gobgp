@@ -1,7 +1,8 @@
-module github.com/osrg/gobgp
+module github.com/osrg/gobgp/v3
 
 require (
 	github.com/BurntSushi/toml v0.3.1
+	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-farm v0.0.0-20171119141306-ac7624ea8da3
@@ -20,8 +21,10 @@ require (
 	github.com/magiconair/properties v1.7.3 // indirect
 	github.com/mitchellh/mapstructure v0.0.0-20170523030023-d0303fe80992 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/osrg/gobgp v2.0.0+incompatible
 	github.com/pelletier/go-buffruneio v0.2.0 // indirect
 	github.com/pelletier/go-toml v1.0.0 // indirect
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/sirupsen/logrus v0.0.0-20170713114250-a3f95b5c4235
 	github.com/spf13/afero v0.0.0-20170217164146-9be650865eab // indirect
 	github.com/spf13/cast v1.1.0 // indirect
@@ -41,5 +44,7 @@ require (
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200601152816-913338de1bd2 // indirect
 )
+
+replace github.com/osrg/gobgp => github.com/imcom/gobgp v3.1.0
 
 go 1.13

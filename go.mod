@@ -10,8 +10,8 @@ require (
 	github.com/eapache/queue v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.2 // indirect
 	github.com/go-test/deep v1.0.6
-	github.com/golang/protobuf v1.0.0
-	github.com/google/uuid v1.1.1
+	github.com/golang/protobuf v1.4.3
+	github.com/google/uuid v1.1.2
 	github.com/hashicorp/hcl v0.0.0-20170509225359-392dba7d905e // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jessevdk/go-flags v1.3.0
@@ -21,7 +21,7 @@ require (
 	github.com/magiconair/properties v1.7.3 // indirect
 	github.com/mitchellh/mapstructure v0.0.0-20170523030023-d0303fe80992 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
-	github.com/osrg/gobgp v2.0.0+incompatible
+	github.com/osrg/gobgp/api/v3 v3.0.0-00010101000000-000000000000
 	github.com/pelletier/go-buffruneio v0.2.0 // indirect
 	github.com/pelletier/go-toml v1.0.0 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
@@ -35,16 +35,17 @@ require (
 	github.com/stretchr/testify v1.6.0
 	github.com/vishvananda/netlink v0.0.0-20170802012344-a95659537721
 	github.com/vishvananda/netns v0.0.0-20170707011535-86bef332bfc3 // indirect
-	golang.org/x/net v0.0.0-20200528225125-3c3fba18258b
+	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
 	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
-	golang.org/x/text v0.3.2 // indirect
-	google.golang.org/genproto v0.0.0-20170731182057-09f6ed296fc6 // indirect
-	google.golang.org/grpc v1.5.1
+	google.golang.org/grpc v1.35.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200601152816-913338de1bd2 // indirect
 )
 
-replace github.com/osrg/gobgp => github.com/imcom/gobgp v3.1.0
+replace (
+	github.com/osrg/gobgp/api/v3 => ./api
+	github.com/osrg/gobgp/v3 => ./
+)
 
 go 1.13

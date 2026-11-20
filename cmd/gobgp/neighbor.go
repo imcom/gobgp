@@ -613,6 +613,8 @@ func makeShowRouteArgs(p *api.Path, idx int, now time.Time, showAge, showBest, s
 		args = append(args, fmt.Sprint(p.GetIdentifier()))
 	case bgp.BGP_ADD_PATH_SEND:
 		args = append(args, fmt.Sprint(p.GetLocalIdentifier()))
+	case bgp.BGP_ADD_PATH_BOTH:
+		args = append(args, fmt.Sprint(p.GetIdentifier()), fmt.Sprint(p.GetLocalIdentifier()))
 	}
 
 	// NLRI
@@ -680,6 +682,39 @@ func makeShowRouteArgs(p *api.Path, idx int, now time.Time, showAge, showBest, s
 	return args
 }
 
+// marshalRibJSON encodes ListPath destinations. Default output matches the
+// historical NewDestination JSON and does not add identifier fields. With
+// showPathIDs, each path also has identifier and local_identifier, including
+// a legitimate 0.
+func marshalRibJSON(rib []*api.Destination, showPathIDs bool) ([]byte, error) {
+	d := make(map[string]*apiutil.Destination, len(rib))
+	for _, dst := range rib {
+		d[dst.Prefix] = apiutil.NewDestination(dst)
+	}
+	if !showPathIDs {
+		return json.Marshal(d)
+	}
+	raw, err := json.Marshal(d)
+	if err != nil {
+		return nil, err
+	}
+	var obj map[string][]map[string]any
+	if err := json.Unmarshal(raw, &obj); err != nil {
+		return nil, err
+	}
+	for _, dst := range rib {
+		paths := obj[dst.Prefix]
+		for i, p := range dst.Paths {
+			if i >= len(paths) {
+				break
+			}
+			paths[i]["identifier"] = p.Identifier
+			paths[i]["local_identifier"] = p.LocalIdentifier
+		}
+	}
+	return json.Marshal(obj)
+}
+
 func showRoute(dsts []*api.Destination, showAge, showBest, showLabel, showMUP, showSendMaxFiltered bool, showIdentifier bgp.BGPAddPathMode) {
 	pathStrs := make([][]any, 0, len(dsts))
 	now := time.Now()
@@ -693,7 +728,12 @@ func showRoute(dsts []*api.Destination, showAge, showBest, showLabel, showMUP, s
 	var format string
 	headers = append(headers, "") // Symbols
 	format = fmt.Sprintf("%%-3s")
-	if showIdentifier != bgp.BGP_ADD_PATH_NONE {
+	switch showIdentifier {
+	case bgp.BGP_ADD_PATH_BOTH:
+		headers = append(headers, "ID", "LocalID")
+		format += "%-5s %-8s "
+	case bgp.BGP_ADD_PATH_NONE:
+	default:
 		headers = append(headers, "ID")
 		format += "%-3s "
 	}
@@ -886,6 +926,9 @@ func showNeighborRib(r string, name string, args []string) error {
 	case cmdGlobal:
 		def = ipv4UC
 		showBest = true
+		if ribShowOpts.ShowPathID {
+			showIdentifier = bgp.BGP_ADD_PATH_BOTH
+		}
 	case cmdLocal:
 		showBest = true
 	case cmdAdjOut:
@@ -1028,11 +1071,10 @@ func showNeighborRib(r string, name string, args []string) error {
 	}
 
 	if globalOpts.Json {
-		d := make(map[string]*apiutil.Destination)
-		for _, dst := range rib {
-			d[dst.Prefix] = apiutil.NewDestination(dst)
+		j, err := marshalRibJSON(rib, r == cmdGlobal && ribShowOpts.ShowPathID)
+		if err != nil {
+			return err
 		}
-		j, _ := json.Marshal(d)
 		fmt.Println(string(j))
 		return nil
 	}

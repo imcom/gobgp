@@ -633,3 +633,15 @@ func TestParseLsSrPolicyProtocolAndHeadend(t *testing.T) {
 		})
 	}
 }
+
+func Test_ParsePathIdentifierMapping(t *testing.T) {
+	zero, err := parsePath(bgp.RF_IPv4_UC, strings.Split("192.0.2.0/24 identifier 0 nexthop 192.0.2.1", " "))
+	require.NoError(t, err)
+	assert.Equal(t, uint32(0), zero.Identifier)
+	assert.Equal(t, uint32(0), zero.LocalIdentifier, "injected identifier must not be copied to local_identifier")
+
+	nonzero, err := parsePath(bgp.RF_IPv4_UC, strings.Split("192.0.2.0/24 identifier 10 nexthop 192.0.2.1", " "))
+	require.NoError(t, err)
+	assert.Equal(t, uint32(10), nonzero.Identifier)
+	assert.Equal(t, uint32(0), nonzero.LocalIdentifier)
+}
